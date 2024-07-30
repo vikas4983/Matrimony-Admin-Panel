@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Payment;
 use App\Models\Plan;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -15,7 +18,16 @@ class PlanController extends Controller
     {
         $plans = Plan::orderByDesc('created_at')->paginate(10);
         $count = ($plans->currentPage() - 1) * $plans->perPage();
-        return view('admin.plans.index', compact('plans', 'count'));
+        // Activbe Count
+        $active = Plan::where('status', 1)->count();
+        //Inactive Count
+        $inActive = Plan::where('status', 0)->count();
+        // All Count
+        $countAll = Plan::count();
+
+
+
+        return view('admin.plans.index', compact('plans', 'count', 'active', 'inActive', 'countAll'));
     }
 
     /**
@@ -117,9 +129,97 @@ class PlanController extends Controller
 
         return redirect('admin/plans')->with('error', $msg);
     }
+
     public function plan()
     {
         $plans = Plan::all();
-        return view('admin.plans.plan', compact('plans'));
+        // Get the ID of the currently authenticated admin
+        $adminId = Auth::id();
+        // $currentDate = Carbon::now();
+        // Retrieve the latest payment made by the admin
+        $latestPayment = Payment::orderBy('created_at', 'desc')
+            ->where('user_id', $adminId)
+            ->with(['user'])
+            ->first();
+        if ($latestPayment ?? '') {
+            $expiryDate = Carbon::parse($latestPayment->expiry_date);
+            $currentDate = Carbon::now();
+            return view('admin.plans.plan', compact('plans', 'adminId', 'latestPayment', 'expiryDate', 'currentDate'));
+        } else {
+            return view('admin.plans.plan', compact('plans',));
+        }
+    }
+    
+    public function checkBoxDelete(Request $request)
+    {
+        //dd('checkBoxDelete');
+        //dd($request->all());
+        $selectedDeletePlanIds = $request->input('selectedDeletePlanIds');
+        if (!empty($selectedDeletePlanIds)) {
+            $ids = explode(',', $selectedDeletePlanIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $plans = Plan::find($id);
+                if ($plans) {
+                    $plans->delete(); // Use delete() method to delete a single record
+                }
+            }
+
+            return redirect()->back()->with('error', 'Selected Plan Deleted Successfully');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+
+    public function activeItem(Request $request)
+    {
+
+        //dd('activeItem');
+        //dd($request->all());
+        $selectedActivePlanIds = $request->input('selectedActivePlanIds');
+        if (!empty($selectedActivePlanIds)) {
+            $ids = explode(',', $selectedActivePlanIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $plans = Plan::find($id);
+                if ($plans) {
+                    $plans->update([
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Plan Activated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+    public function inActiveItem(Request $request)
+    {
+        //dd('inActiveItem');
+        // dd($request->all());
+        $selectedInactivePlanIds = $request->input('selectedInactivePlanIds');
+        if (!empty($selectedInactivePlanIds)) {
+            $ids = explode(',', $selectedInactivePlanIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $plans = Plan::find($id);
+                if ($plans) {
+                    $plans->update([
+                        'status' => 0
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Plan inActivated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
     }
 }

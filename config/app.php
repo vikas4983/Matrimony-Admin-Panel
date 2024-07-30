@@ -163,6 +163,7 @@ return [
         /*
          * Application Service Providers...
          */
+        App\Providers\CountServiceProvider::class,
         App\Providers\PaymentServiceProvider::class,
         App\Providers\LogoFaviconServiceProvider::class,
         App\Providers\PaidPlanServiceProvider::class,

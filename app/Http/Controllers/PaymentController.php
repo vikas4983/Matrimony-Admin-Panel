@@ -23,6 +23,7 @@ class PaymentController extends Controller
      */
     public function create($token)
     {
+        
     }
 
     /**
@@ -145,4 +146,12 @@ class PaymentController extends Controller
             return redirect('admin_login')->with('error', $msg);
         }
     }
+
+        //  public function activePlan(){
+        //     $user = Auth::user()->id;
+        //     dd($user);
+            
+        //  }
+
+
 }

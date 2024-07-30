@@ -28,7 +28,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'status'
     ];
+    public function getStatusAttribute($value)
+    {
+        return $value == 1 ? 'Active' : 'Inactive';
+    }
 
     /**
      * The attributes that should be hidden for serialization.
@@ -59,4 +64,21 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
+    public function approvals()
+    {
+        return $this->hasMany(Approval::class);
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+    public function plans()
+    {
+        return $this->hasMany(Plan::class);
+    }
+    public function successStories()
+    {
+        return $this->hasMany(SuccessStory::class);
+    }
 }

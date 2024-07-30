@@ -16,7 +16,13 @@ class ReligionController extends Controller
         $religions =
         Religion::orderByDesc('created_at')->paginate(10);
         $count = ($religions->currentPage() - 1) * $religions->perPage();
-        return view('admin.religions.index', compact('religions','count'));
+        // Activbe Count
+        $active = Religion::where('status', 1)->count();
+        //Inactive Count
+        $inActive = Religion::where('status', 0)->count();
+        // All Count
+        $countAll = Religion::count();
+        return view('admin.religions.index', compact('religions','count', 'active', 'inActive', 'countAll'));
     }
 
     /**
@@ -80,5 +86,78 @@ class ReligionController extends Controller
         $msg = "Religion Deleted Successfully";
 
         return redirect('admin/religions')->with('error', $msg);
+    }
+
+    public function checkBoxDelete(Request $request)
+    {
+        //dd('checkBoxDelete');
+        //dd($request->all());
+        $selectedDeleteReligionIds = $request->input('selectedDeleteReligionIds');
+        if (!empty($selectedDeleteReligionIds)) {
+            $ids = explode(',', $selectedDeleteReligionIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $religions = Religion::find($id);
+                if ($religions) {
+                    $religions->delete(); // Use delete() method to delete a single record
+                }
+            }
+
+            return redirect()->back()->with('error', 'Selected Religion Deleted Successfully');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+
+    public function activeItem(Request $request)
+    {
+
+        //dd('activeItem');
+        //dd($request->all());
+        $selectedActiveReligionIds = $request->input('selectedActiveReligionIds');
+        if (!empty($selectedActiveReligionIds)) {
+            $ids = explode(',', $selectedActiveReligionIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $religions = Religion::find($id);
+                if ($religions) {
+                    $religions->update([
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Religion Activated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+    public function inActiveItem(Request $request)
+    {
+        //dd('inActiveItem');
+        // dd($request->all());
+        $selectedInactiveReligionIds = $request->input('selectedInactiveReligionIds');
+        if (!empty($selectedInactiveReligionIds)) {
+            $ids = explode(',', $selectedInactiveReligionIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $religions = Religion::find($id);
+                if ($religions) {
+                    $religions->update([
+                        'status' => 0
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Religion inActivated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
     }
 }

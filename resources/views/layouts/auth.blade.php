@@ -6,48 +6,29 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
     <title>@yield('title')</title>
-
-
-
     <!-- theme meta -->
     <meta name="theme-name" content="mono" />
-
     <!-- GOOGLE FONTS -->
     <link href="https://fonts.googleapis.com/css?family=Karla:400,700|Roboto" rel="stylesheet">
     <link href="{{ asset('assets/auth/plugins/material/css/materialdesignicons.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/auth/plugins/simplebar/simplebar.css') }}" rel="stylesheet" />
-
     <!-- PLUGINS CSS STYLE -->
     <link href="{{ asset('assets/auth/plugins/nprogress/nprogress.css') }}" rel="stylesheet" />
-
     @yield('styles') @yield('font-awesome-cdn')
     <link href="{{ asset('assets/auth/plugins/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css') }}"
         rel="stylesheet" />
-
-
-
     <link href="{{ asset('assets/auth/plugins/jvectormap/jquery-jvectormap-2.0.3.css') }}" rel="stylesheet" />
-
-
-
     <link href="{{ asset('assets/auth/plugins/daterangepicker/daterangepicker.css') }}" rel="stylesheet" />
-
-
-
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-
-
-
     <link href="{{ asset('assets/auth/plugins/toaster/toastr.min.css') }}" rel="stylesheet" />
-
-
     <!-- MONO CSS -->
     <link id="main-css-href" rel="stylesheet" href="{{ asset('assets/auth/css/style.css') }}" />
+    <!-- COUNT CSS -->
+    <link rel="stylesheet" href="{{ asset('assets/auth/css/count-badge.css') }}" />
     <!-- FAVICON -->
     @if ($favicons ?? '')
-        <link href="{{ asset('storage/admin/logo-favicon/favicons/' . ($favicons->name ??  '')) }}"
+        <link href="{{ asset('storage/admin/logo-favicon/favicons/' . ($favicons->name ?? '')) }}"
             rel="shortcut icon" />
     @else
         <link href="{{ asset('assets/auth/images/favicon.png') }}" rel="shortcut icon" />
@@ -60,6 +41,8 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+    <script src="{{ asset('assets/auth/plugins/circle-progress/circle-progress.js') }}"></script>
+    <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
     <script src="{{ asset('assets/auth/plugins/nprogress/nprogress.js') }}"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0- 
      alpha/css/bootstrap.css"
@@ -72,7 +55,12 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-
+    <script>
+        NProgress.configure({
+            showSpinner: false
+        });
+        NProgress.start();
+    </script>
     <style>
         .loader-container {
             background-color: rgb(72, 91, 169);
@@ -171,24 +159,85 @@
                 <div class="sidebar-left" data-simplebar style="height: 100%;">
                     <!-- sidebar menu -->
                     <ul class="nav sidebar-inner" id="sidebar-menu">
-                        <li class="active">
+                        <li class="activev">
                             <a class="sidenav-item-link" href="{{ url('dashboard') }}">
-
-                                <i class="mdi mdi-briefcase-account-outline" style="color: rgb(158,109,226)"></i>
+                                <i class="mdi mdi-view-dashboard" style="color: rgb(158,109,226)"></i>
                                 <span class="nav-text">Admin Dashboard</span>
                             </a>
                         </li>
                         <li>
                             <a class="sidenav-item-link" href="{{ route('admins.index') }}">
 
-                                <i class="mdi mdi-chart-line" style="color: rgb(158,109,226)"></i>
-                                <span class="nav-text">Admins</span>
+                                <i class="mdi mdi-briefcase-account-outline" style="color: rgb(158,109,226)"></i>
+                                <span class="nav-text">Admins<span
+                                        class="count-badge">{{ $counts['adminsCount'] ?? '' }}</span></span>
                             </a>
                         </li>
+                        {{-- <li class="section-title">
+                            Action
+                        </li> --}}
+
+
+
+
+
                         <li class="section-title">
                             Action
                         </li>
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                data-target="#members" aria-expanded="false" aria-controls="members">
+                                <i class="mdi mdi-account-group-outline" style="color: rgb(158,109,226)"></i>
+                                <span class="nav-text">Members</span> <b class="caret"></b>
+                            </a>
+                            <ul class="collapse" id="members" data-parent="#sidebar-menu">
+                                <div class="sub-menu">
 
+                                    <li>
+                                        <a class="sidenav-item-link" href="{{ route('members.index') }}">
+                                            <span class="nav-text">All Members</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="sidenav-item-link" href="user-activities.html">
+                                            <span class="nav-text">Active Members</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="sidenav-item-link" href="user-profile-settings.html">
+                                            <span class="nav-text">Active to Paid Members</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="sidenav-item-link" href="user-account-settings.html">
+                                            <span class="nav-text">Change Membership Plan</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="sidenav-item-link" href="user-planing-settings.html">
+                                            <span class="nav-text">Featured Profile</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="sidenav-item-link" href="user-billing.html">
+                                            <span class="nav-text">User billing</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="sidenav-item-link" href="user-notify-settings.html">
+                                            <span class="nav-text">User Notify Settings</span>
+
+                                        </a>
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
 
                         <li class="has-sub">
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
@@ -201,7 +250,9 @@
                                     <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                             data-target="#tables" aria-expanded="false" aria-controls="tables">
-                                            <span class="nav-text">Countries</span> <b class="caret"></b>
+                                            <span class="nav-text">Countries<span
+                                                    class="count-badge">{{ $counts['countriesCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
                                         </a>
                                         <ul class="collapse" id="tables">
                                             <div class="sub-menu">
@@ -220,7 +271,9 @@
                                     <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                             data-target="#icons" aria-expanded="false" aria-controls="icons">
-                                            <span class="nav-text">State</span> <b class="caret"></b>
+                                            <span class="nav-text">State<span
+                                                    class="count-badge">{{ $counts['statesCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
                                         </a>
                                         <ul class="collapse" id="icons">
                                             <div class="sub-menu">
@@ -238,7 +291,9 @@
                                     <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                             data-target="#widgets" aria-expanded="false" aria-controls="widgets">
-                                            <span class="nav-text">Cities</span> <b class="caret"></b>
+                                            <span class="nav-text">Cities<span
+                                                    class="count-badge">{{ $counts['citiesCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
                                         </a>
                                         <ul class="collapse" id="widgets">
                                             <div class="sub-menu">
@@ -269,7 +324,9 @@
                                     <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                             data-target="#religions" aria-expanded="false" aria-controls="religions">
-                                            <span class="nav-text">Religion</span> <b class="caret"></b>
+                                            <span class="nav-text">Religion<span
+                                                    class="count-badge">{{ $counts['religionsCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
                                         </a>
                                         <ul class="collapse" id="religions">
                                             <div class="sub-menu">
@@ -288,7 +345,9 @@
                                     <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                             data-target="#castes" aria-expanded="false" aria-controls="castes">
-                                            <span class="nav-text">Caste</span> <b class="caret"></b>
+                                            <span class="nav-text">Caste<span
+                                                    class="count-badge">{{ $counts['castesCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
                                         </a>
                                         <ul class="collapse" id="castes">
                                             <div class="sub-menu">
@@ -312,7 +371,9 @@
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#Employees" aria-expanded="false" aria-controls="Employees">
                                 <i class="mdi mdi-account-group" style="color: rgb(158,109,226)"></i>
-                                <span class="nav-text">Employee </span> <b class="caret"></b>
+                                <span class="nav-text">Employee <span
+                                        class="count-badge">{{ $counts['employeesCount'] ?? '' }}</span></span> <b
+                                    class="caret"></b>
                             </a>
                         <li class="has-sub">
                             <ul class="collapse" id="Employees">
@@ -334,7 +395,9 @@
                                 data-target="#Educations" aria-expanded="false" aria-controls="Educations">
 
                                 <i class="mdi mdi-book" style="color: rgb(158,109,226)"></i>
-                                <span class="nav-text">Education </span> <b class="caret"></b>
+                                <span class="nav-text">Education <span
+                                        class="count-badge">{{ $counts['educationsCount'] ?? '' }}</span></span> <b
+                                    class="caret"></b>
                             </a>
                         <li class="has-sub">
                             <ul class="collapse" id="Educations">
@@ -355,7 +418,9 @@
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#Occupations" aria-expanded="false" aria-controls="Occupations">
                                 <i class="mdi mdi-briefcase" style="color: rgb(158,109,226)"></i>
-                                <span class="nav-text">Occupation </span> <b class="caret"></b>
+                                <span class="nav-text">Occupation<span
+                                        class="count-badge">{{ $counts['occupationsCount'] ?? '' }}</span> </span> <b
+                                    class="caret"></b>
                             </a>
 
                         <li class="has-sub">
@@ -377,7 +442,9 @@
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#Incomes" aria-expanded="false" aria-controls="Incomes">
                                 <i class="mdi mdi-currency-inr" style="color: rgb(158,109,226)"></i>
-                                <span class="nav-text">Income </span> <b class="caret"></b>
+                                <span class="nav-text">Income<span
+                                        class="count-badge">{{ $counts['incomesCount'] ?? '' }}</span> </span> <b
+                                    class="caret"></b>
                             </a>
 
 
@@ -394,13 +461,14 @@
                                 </div>
                             </ul>
                         </li>
-
                         </li>
                         <li class="has-sub">
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#Plans" aria-expanded="false" aria-controls="Plans">
                                 <i class="mdi mdi-chess-queen" style="color: rgb(158,109,226)"></i>
-                                <span class="nav-text">Plan </span> <b class="caret"></b>
+                                <span class="nav-text">Plan <span
+                                        class="count-badge">{{ $counts['plansCount'] ?? '' }}</span></span> <b
+                                    class="caret"></b>
                             </a>
 
 
@@ -420,6 +488,33 @@
                         </li>
                         <li class="has-sub">
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                data-target="#successStories" aria-expanded="false" aria-controls="successStories">
+                                <i class="mdi mdi-chess-queen" style="color: rgb(158,109,226)"></i>
+                                <span class="nav-text">Success Story <span
+                                        class="count-badge">{{ $counts['successStoriesCount'] ?? '' }}</span></span>
+                                <b class="caret"></b>
+                            </a>
+
+
+                        <li class="has-sub">
+                            <ul class="collapse" id="successStories">
+                                <div class="sub-menu">
+                                    <li>
+                                        <a href="{{ route('successStories.index') }}">List</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('successStories.create') }}">Create</a>
+
+                                    </li>
+                                </div>
+                            </ul>
+                        </li>
+                        </li>
+                        <li class="section-title">
+                            Action
+                        </li>
+                        <li class="has-sub">
+                            <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#ui-siteSettings" aria-expanded="false" aria-controls="ui-siteSettings">
                                 <i class="mdi mdi-cellphone-settings-variant" style="color: rgb(158,109,226)"></i>
                                 <span class="nav-text">Site Settings</span> <b class="caret"></b>
@@ -428,8 +523,111 @@
                                 <div class="sub-menu">
                                     <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                            data-target="#approvals" aria-expanded="false" aria-controls="approvals">
+                                            <span class="nav-text">Approval<span
+                                                    class="count-badge">{{ $counts['approvalsCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="collapse" id="approvals">
+                                            <div class="sub-menu">
+
+                                                <li>
+                                                    <a href="{{ route('approvals.index') }}">List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('approvals.create') }}">Create</a>
+                                                </li>
+
+                                            </div>
+                                        </ul>
+                                    </li>
+                                    <li class="has-sub">
+                                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                            data-target="#banners" aria-expanded="false" aria-controls="banners">
+                                            <span class="nav-text">Banner<span
+                                                    class="count-badge">{{ $counts['bannersCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="collapse" id="banners">
+                                            <div class="sub-menu">
+
+                                                <li>
+                                                    <a href="{{ route('banners.index') }}">List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('banners.create') }}">Create</a>
+                                                </li>
+
+                                            </div>
+                                        </ul>
+                                    </li>
+                                    <li class="has-sub">
+                                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                            data-target="#cmsPages" aria-expanded="false" aria-controls="cmsPages">
+                                            <span class="nav-text">CMS Pages<span
+                                                    class="count-badge">{{ $counts['cmsPagesCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="collapse" id="cmsPages">
+                                            <div class="sub-menu">
+
+                                                <li>
+                                                    <a href="{{ route('cmsPages.index') }}">List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('cmsPages.create') }}">Create</a>
+                                                </li>
+
+                                            </div>
+                                        </ul>
+                                    </li>
+                                    <li class="has-sub">
+                                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                            data-target="#emailSettings" aria-expanded="false"
+                                            aria-controls="emailSettings">
+                                            <span class="nav-text">Email Setting<span
+                                                    class="count-badge">{{ $counts['emailSettingsCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="collapse" id="emailSettings">
+                                            <div class="sub-menu">
+
+                                                <li>
+                                                    <a href="{{ route('emailSettings.index') }}">List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('emailSettings.create') }}">Create</a>
+                                                </li>
+
+                                            </div>
+                                        </ul>
+                                    </li>
+                                    <li class="has-sub">
+                                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                            data-target="#favicons" aria-expanded="false" aria-controls="favicons">
+                                            <span class="nav-text">Favicon<span
+                                                    class="count-badge">{{ $counts['faviconsCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="collapse" id="favicons">
+                                            <div class="sub-menu">
+
+                                                <li>
+                                                    <a href="{{ route('favicons.index') }}">List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('favicons.create') }}">Create</a>
+                                                </li>
+
+                                            </div>
+                                        </ul>
+                                    </li>
+                                    <li class="has-sub">
+                                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                             data-target="#logos" aria-expanded="false" aria-controls="logos">
-                                            <span class="nav-text">Logo</span> <b class="caret"></b>
+                                            <span class="nav-text">Logo<span
+                                                    class="count-badge">{{ $counts['logosCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
                                         </a>
                                         <ul class="collapse" id="logos">
                                             <div class="sub-menu">
@@ -447,17 +645,83 @@
 
                                     <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
-                                            data-target="#favicons" aria-expanded="false" aria-controls="favicons">
-                                            <span class="nav-text">Favicon</span> <b class="caret"></b>
+                                            data-target="#menus" aria-expanded="false" aria-controls="menus">
+                                            <span class="nav-text">Menu<span
+                                                    class="count-badge">{{ $counts['menusCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
                                         </a>
-                                        <ul class="collapse" id="favicons">
+                                        <ul class="collapse" id="menus">
                                             <div class="sub-menu">
 
                                                 <li>
-                                                    <a href="{{ route('favicons.index') }}">List</a>
+                                                    <a href="{{ route('menus.index') }}">List</a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('favicons.create') }}">Create</a>
+                                                    <a href="{{ route('menus.create') }}">Create</a>
+                                                </li>
+
+                                            </div>
+                                        </ul>
+                                    </li>
+                                    <li class="has-sub">
+                                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                            data-target="#profileids" aria-expanded="false"
+                                            aria-controls="profileids">
+                                            <span class="nav-text">Profile Id<span
+                                                    class="count-badge">{{ $counts['profileidsCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="collapse" id="profileids">
+                                            <div class="sub-menu">
+
+                                                <li>
+                                                    <a href="{{ route('profileids.index') }}">List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('profileids.create') }}">Create</a>
+                                                </li>
+
+                                            </div>
+                                        </ul>
+                                    </li>
+                                    <li class="has-sub">
+                                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                            data-target="#siteConfigs" aria-expanded="false"
+                                            aria-controls="siteConfigs">
+                                            <span class="nav-text">Site Config<span
+                                                    class="count-badge">{{ $counts['siteConfigsCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="collapse" id="siteConfigs">
+                                            <div class="sub-menu">
+
+                                                <li>
+                                                    <a href="{{ route('siteConfigs.index') }}">List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('siteConfigs.create') }}">Create</a>
+                                                </li>
+
+                                            </div>
+                                        </ul>
+                                    </li>
+
+                                    <li class="has-sub">
+                                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                            data-target="#siteSettings" aria-expanded="false"
+                                            aria-controls="siteSettings">
+                                            <span class="nav-text">Site Setting<span
+                                                    class="count-badge">{{ $counts['siteSettingsCount'] ?? '' }}</span></span>
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="collapse" id="siteSettings">
+                                            <div class="sub-menu">
+
+                                                <li>
+                                                    <a href="{{ route('siteSettings.index') }}">List</a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('siteSettings.create') }}">Create</a>
                                                 </li>
 
                                             </div>
@@ -466,8 +730,9 @@
                                 </div>
                             </ul>
                         </li>
-                        {{-- <li class="has-sub">
-                            <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#widgets" aria-expanded="false" aria-controls="icons">
+                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                            data-target="#widgets" aria-expanded="false" aria-controls="icons">
+                            {{-- <li class="has-sub">
 
                                 <i class="mdi mdi-map"></i>
                                 <div class="nav-text">Countries</div>
@@ -475,75 +740,75 @@
                                 <b class="caret"></b>
                             </a>
 
-                        </li>
+                            
+                                                                </li>
 
-
-                        <ul class="collapse" id="widgets">
-
+                                        
+                                                                                <ul class="collapse" id="widgets">
                             <div class="sub-menu">
 
                                 <li>
                                     <a href="{{ route('countries.index') }}">View Countries</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('countries.create') }}">Create Countries</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('states.index') }}">View States</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('states.create') }}">Create State</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('cities.index') }}">View City</a>
-                        </li>
-                        <li>
+                                        </li>             
+                                             <li>
+                                            </li>
+                                                                                     <a href="{{ route('countries.create') }}">Create Countries</a>
+                                     <li>
+                                    </li>
+                                                                             <a href="{{ route('states.index') }}">View States</a>
+                                     <li>
+                                    </li>
+                                                                             <a href="{{ route('states.create') }}">Create State</a>
+                                     <li>
+                                    </li>
+                                                                             <a href="{{ route('cities.index') }}">View City</a>
+                                     <li>
                             <a href="{{ route('cities.create') }}">Create City</a>
-                        </li>
-                </div>
-                </ul>
-                </li> --}}
+                                     </li>
+                               </div>
+                               </ul>
+                               </li> --}}
 
 
-                        {{-- <li class="has-sub">
-                    <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#email" aria-expanded="false" aria-controls="email">
+                            {{-- <li class="has-sub">
+                                                              <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#email" aria-expanded="false" aria-controls="email">
                         <i class="mdi mdi-email"></i>
                         <span class="nav-text">Religion</span> <b class="caret"></b>
-                    </a>
-                    <ul class="collapse" id="email" data-parent="#sidebar-menu">
+                                                              </a>
+                                                              <ul class="collapse" id="email" data-parent="#sidebar-menu">
                         <div class="sub-menu">
                             <li>
                                 <a class="sidenav-item-link" href="{{ route('religions.index') }}">
-                <span class="nav-text">View Relogins</span>
+                               <span class="nav-text">View Relogins</span>
 
-                </a>
-                </li>
-                <li>
-                    <a class="sidenav-item-link" href="{{ route('religions.create') }}">
+                               </a>
+                               </li>
+                               <li>
+                                                              <a class="sidenav-item-link" href="{{ route('religions.create') }}">
                         <span class="nav-text">Create Religion</span>
 
-                    </a>
-                </li>
-                <li>
-                    <a class="sidenav-item-link" href="{{ route('castes.index') }}">
+                                                              </a>
+                               </li>
+                               <li>
+                                                              <a class="sidenav-item-link" href="{{ route('castes.index') }}">
                         <span class="nav-text">View Castes</span>
 
-                    </a>
-                </li>
-                <li>
-                    <a class="sidenav-item-link" href="{{ route('castes.create') }}">
+                                                              </a>
+                               </li>
+                               <li>
+                                                              <a class="sidenav-item-link" href="{{ route('castes.create') }}">
                         <span class="nav-text">Create Caste</span>
 
-                    </a>
-                </li>
-            </div>
-            </ul>
-            </li> --}}
+                                                              </a>
+                               </li>
+                                                                      </div>
+                                                                      </ul>
+                                                                     </li> --}}
 
-                        {{-- <li class="section-title">
+                            {{-- <li class="section-title">
                             UI Elements
-                        </li> --}}
-                        {{--  <li class="has-sub">
+                                                                 </li> --}}
+                            {{--  <li class="has-sub">
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#ui-elements" aria-expanded="false" aria-controls="ui-elements">
                                 <i class="mdi mdi-folder-outline"></i>
@@ -575,7 +840,7 @@
                                         </a>
                                     </li> --}}
 
-                        {{-- <li class="has-sub">
+                            {{-- <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                             data-target="#buttons" aria-expanded="false" aria-controls="buttons">
                                             <span class="nav-text">Buttons</span> <b class="caret"></b>
@@ -611,7 +876,7 @@
 
 
 
-                        {{-- <li>
+                            {{-- <li>
                                         <a class="sidenav-item-link" href="{{ route('incomes.index') }}">
                                             <span class="nav-text">Income</span>
 
@@ -742,7 +1007,7 @@
 
 
 
-                        {{-- <li class="has-sub">
+                            {{-- <li class="has-sub">
                                         <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                             data-target="#tables" aria-expanded="false" aria-controls="tables">
                                             <span class="nav-text">Tables</span> <b class="caret"></b>
@@ -895,18 +1160,13 @@
                                 </div>
                             </ul>
                         </li>
-
-
-
-
-
-                        <li class="has-sub">
-                            <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
+                                                             <li class="has-sub">
+                                                                       <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#charts" aria-expanded="false" aria-controls="charts">
                                 <i class="mdi mdi-chart-pie"></i>
                                 <span class="nav-text">Charts</span> <b class="caret"></b>
                             </a>
-                            <ul class="collapse" id="charts" data-parent="#sidebar-menu">
+                                                                    <ul class="collapse" id="charts" data-parent="#sidebar-menu">
                                 <div class="sub-menu">
 
 
@@ -918,12 +1178,12 @@
                                         </a>
                                     </li>
                                 </div>
-                            </ul>
-                        </li>
-                        <li class="section-title">
+                                                                    </ul>
+                                                                  </li>
+                             <li class="section-title">
                             Pages
-                        </li>
-                        <li class="has-sub">
+                           </li>
+                                                                  <li class="has-sub">
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#users" aria-expanded="false" aria-controls="users">
                                 <i class="mdi mdi-image-filter-none"></i>
@@ -976,8 +1236,8 @@
                                     </li>
                                 </div>
                             </ul>
-                        </li>
-                        <li class="has-sub">
+                                                                  </li>
+                                                                  <li class="has-sub">
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#authentication" aria-expanded="false" aria-controls="authentication">
                                 <i class="mdi mdi-account"></i>
@@ -1005,8 +1265,8 @@
                                     </li>
                                 </div>
                             </ul>
-                        </li>
-                        <li class="has-sub">
+                                                                  </li>
+                                                                  <li class="has-sub">
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#other-page" aria-expanded="false" aria-controls="other-page">
                                 <i class="mdi mdi-file-multiple"></i>
@@ -1040,17 +1300,17 @@
                                     </li>
                                 </div>
                             </ul>
-                        </li>
-                        <li class="section-title">
+                                                                  </li>
+                                                                  <li class="section-title">
                             Documentation
-                        </li>
-                        <li>
+                                                                  </li>
+                                                                  <li>
                             <a class="sidenav-item-link" href="getting-started.html">
                                 <i class="mdi mdi-airplane"></i>
                                 <span class="nav-text">Getting Started</span>
                             </a>
-                        </li>
-                        <li class="has-sub">
+                                                                  </li>
+                                                                  <li class="has-sub">
                             <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse"
                                 data-target="#customization" aria-expanded="false" aria-controls="customization">
                                 <i class="mdi mdi-square-edit-outline"></i>
@@ -1078,12 +1338,10 @@
                                     </li>
                                 </div>
                             </ul>
-                        </li>
-                    </ul>
-
-                </div> 
-
-                <div class="sidebar-footer">
+                                                                  </li>
+                                                             </ul>
+                                                             </div> 
+                      <div class="sidebar-footer">
                     <div class="sidebar-footer-content">
                         <ul class="d-flex">
                             <li>
@@ -1096,8 +1354,8 @@
                             </li>
                         </ul>
                     </div>
-                </div>
-                --}}
+                    </div>
+                   --}}
                 </div>
         </aside>
 
@@ -1476,7 +1734,7 @@
                                             <div class="container">
                                                 <div>
                                                     <span style="color: #976AD8">Plan Name:</span> <span
-                                                        style="color: #0ACB8E; font-size:15px; ">{{ $activePlan->plan->name }}</span>
+                                                        style="color: #0ACB8E; font-size:15px; ">{{ $activePlan->plan->name ?? '' }}</span>
                                                 </div>
                                                 <hr>
                                                 <div>
@@ -1609,61 +1867,72 @@
                     document.getElementById("copy-year").innerHTML = year;
                 </script>
             </footer>
-
         </div>
-    </div>
-    <script src="{{ asset('assets/auth/plugins/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('assets/auth/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/auth/plugins/simplebar/simplebar.min.js') }}"></script>
-    <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script src="{{ asset('assets/auth/plugins/jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
-    <script src="{{ asset('assets/auth/plugins/jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
-    <script src="{{ asset('assets/auth/plugins/jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
-    <script>
-        jQuery(document).ready(function() {
-            jQuery('input[name="dateRange"]').daterangepicker({
-                autoUpdateInput: false,
-                singleDatePicker: true,
-                locale: {
-                    cancelLabel: 'Clear'
-                }
+
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+        <script src="{{ asset('assets/auth/plugins/toaster/toastr.min.js') }}"></script>
+        <script src="{{ asset('assets/auth/plugins/circle-progress/circle-progress.js') }}"></script>
+        <script src="{{ asset('assets/auth/plugins/jquery/jquery.min.js') }}"></script>
+        <script src="{{ asset('assets/auth/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/auth/plugins/simplebar/simplebar.min.js') }}"></script>
+        <script src="https://unpkg.com/hotkeys-js/dist/hotkeys.min.js"></script>
+        <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+        <script src="{{ asset('assets/auth/plugins/jvectormap/jquery-jvectormap-2.0.3.min.js') }}"></script>
+        <script src="{{ asset('assets/auth/plugins/jvectormap/jquery-jvectormap-world-mill.js') }}"></script>
+        <script src="{{ asset('assets/auth/plugins/jvectormap/jquery-jvectormap-us-aea.js') }}"></script>
+        <script src="{{ asset('assets/auth/js/mono.js') }}"></script>
+        <script src="{{ asset('assets/auth/js/chart.js') }}"></script>
+        <script src="{{ asset('assets/auth/js/map.js') }}"></script>
+        <script src="{{ asset('assets/auth/js/custom.js') }}"></script>
+        <script src="{{ asset('assets/auth/js/custom-new-js/create-delete-active-inactive.js') }}"></script>
+        <script src="{{ asset('assets/auth/js/custom-new-js/modal-form-validation.js') }}"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.js"></script>
+        <link rel="stylesheet" type="text/css"
+            href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css">
+        <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+
+
+
+
+
+
+        <script>
+            jQuery(document).ready(function() {
+                jQuery('input[name="dateRange"]').daterangepicker({
+                    autoUpdateInput: false,
+                    singleDatePicker: true,
+                    locale: {
+                        cancelLabel: 'Clear'
+                    }
+                });
+                jQuery('input[name="dateRange"]').on('apply.daterangepicker', function(ev, picker) {
+                    jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+                });
+                jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function(ev, picker) {
+                    jQuery(this).val('');
+                });
             });
-            jQuery('input[name="dateRange"]').on('apply.daterangepicker', function(ev, picker) {
-                jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+        </script>
+        <script>
+            $(document).ready(function() {
+                $('#admin_logout-button').click(function() {
+
+
+                    $('#admin_logout-form').submit();
+
+
+                });
             });
-            jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function(ev, picker) {
-                jQuery(this).val('');
-            });
-        });
-    </script>
-    <script>
-        $(document).ready(function() {
-            $('#admin_logout-button').click(function() {
-
-
-                $('#admin_logout-form').submit();
-
-
-            });
-        });
-    </script>
-
-
-    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script src="{{ asset('assets/auth/plugins/toaster/toastr.min.js') }}"></script>
-    <script src="{{ asset('assets/auth/js/mono.js') }}"></script>
-    <script src="{{ asset('assets/auth/js/chart.js') }}"></script>
-    <script src="{{ asset('assets/auth/js/map.js') }}"></script>
-    <script src="{{ asset('assets/auth/js/custom.js') }}"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.js"></script>
-    <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.css">
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+        </script>
+        {{-- Razorpay  --}}
 
 
 
-    @yield('scripts')
-    <!--  -->
+
+
+        @yield('scripts')
+        <!--  -->
 </body>
 
 <script>

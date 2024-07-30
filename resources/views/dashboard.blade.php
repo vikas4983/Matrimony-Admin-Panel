@@ -1,4 +1,3 @@
-
 @extends('layouts.auth')
 @section('title', 'Dashboard | Admin')
 @section('styles')
@@ -25,8 +24,9 @@
                                 <div class="icon-md bg-secondary rounded-circle mr-3">
                                     <i class="mdi mdi-earth"></i>
                                 </div>
+
                                 <div class=" text-left">
-                                    <span class="h2 d-block">{{ $countries ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['countries'] ?? '' }}</span>
                                     <p>Countries</p>
                                 </div>
                             </div>
@@ -46,7 +46,7 @@
 \f444"></i>
                                 </div>
                                 <div class=" text-left">
-                                    <span class="h2 d-block">{{ $states ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['states'] ?? '' }}</span>
 
 
                                     <p>States</p>
@@ -66,7 +66,7 @@
                                     <i class="mdi mdi-city"></i>
                                 </div>
                                 <div class="text-left">
-                                    <span class="h2 d-block">{{ $cities ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['cities'] ?? '' }}</span>
                                     <p>Cities</p>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                     <i class="mdi mdi-book"></i>
                                 </div>
                                 <div class="text-left">
-                                    <span class="h2 d-block">{{ $educations ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['educations'] ?? '' }}</span>
                                     <p>Educations</p>
                                 </div>
                             </div>
@@ -108,7 +108,7 @@
                                     <i class="mdi mdi-hinduism"></i>
                                 </div>
                                 <div class=" text-left">
-                                    <span class="h2 d-block">{{ $religions ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['religions'] ?? '' }}</span>
                                     <p>Religions</p>
                                 </div>
                             </div>
@@ -127,7 +127,7 @@
 
                                 </div>
                                 <div class=" text-left">
-                                    <span class="h2 d-block">{{ $castes ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['castes'] ?? '' }}</span>
                                     <p>Castes</p>
                                 </div>
                             </div>
@@ -147,7 +147,7 @@
 
                                 </div>
                                 <div class="text-left">
-                                    <span class="h2 d-block">{{ $incomes ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['incomes'] ?? '' }}</span>
                                     <p>Incomes</p>
                                 </div>
                             </div>
@@ -165,7 +165,7 @@
                                     <i class="mdi mdi-briefcase"></i>
                                 </div>
                                 <div class="text-left">
-                                    <span class="h2 d-block">{{ $occupations ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['occupations'] ?? '' }}</span>
                                     <p>Occupations</p>
                                 </div>
                             </div>
@@ -188,7 +188,7 @@
 
                                 </div>
                                 <div class=" text-left">
-                                    <span class="h2 d-block">{{ $admins ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['admins'] ?? '' }}</span>
                                     <p>Admins</p>
                                 </div>
                             </div>
@@ -199,11 +199,12 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="card card-default">
                         <a href="{{ route('plans.index') }}" style="color: inherit">
-<div class="d-flex p-5">
+                            <div class="d-flex p-5">
                                 <div class="icon-md bg-success rounded-circle mr-3">
-                                    <i class="mdi mdi-chess-queen"></i></div>
+                                    <i class="mdi mdi-chess-queen"></i>
+                                </div>
                                 <div class=" text-left">
-                                    <span class="h2 d-block">{{ $plans ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['plans'] ?? '' }}</span>
                                     <p>Plans</p>
                                 </div>
                             </div>
@@ -214,11 +215,12 @@
                 <div class="col-xl-3 col-md-6">
                     <div class="card card-default">
                         <a href="{{ route('employees.index') }}" style="color: inherit">
-<div class="d-flex p-5">
+                            <div class="d-flex p-5">
                                 <div class="icon-md bg-primary rounded-circle mr-3">
-                                    <i class="mdi mdi-account-group"></i></div>
+                                    <i class="mdi mdi-account-group"></i>
+                                </div>
                                 <div class=" text-left">
-                                    <span class="h2 d-block">{{ $employees ?? ''  }}</span>
+                                    <span class="h2 d-block">{{ $count['employees'] ?? '' }}</span>
                                     <p>Employeed In</p>
                                 </div>
                             </div>
@@ -226,7 +228,193 @@
 
                     </div>
                 </div>
-</div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('cmsPages.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-info rounded-circle mr-3">
+                                    <i class="mdi mdi-file-multiple"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['cmsPages'] ?? '' }}</span>
+                                    <p>CMS Pages</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <!-- Frist box -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('logos.index') }}" style="color: inherit">
+
+
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-secondary rounded-circle mr-3">
+                                    <i class="mdi mdi-account-key"></i>
+
+
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['logos'] ?? '' }}</span>
+                                    <p>Logos</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!-- Second box -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('favicons.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-success rounded-circle mr-3">
+                                    <i class="mdi mdi-chess-queen"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['favicons'] ?? '' }}</span>
+                                    <p>Favicons</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('banners.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-primary rounded-circle mr-3">
+                                    <i class="mdi mdi-home-plus"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['banners'] ?? '' }}</span>
+                                    <p>Banners</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('menus.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-info rounded-circle mr-3">
+                                    <i class="mdi mdi-file-multiple"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['menus'] ?? '' }}</span>
+                                    <p>Menus</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('profileids.index') }}" style="color: inherit">
+
+
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-secondary rounded-circle mr-3">
+                                    <i class="mdi mdi-bookmark-minus-outline"></i>
+
+
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['profileids'] ?? '' }}</span>
+                                    <p>Profile Id</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!-- Second box -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('emailSettings.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-success rounded-circle mr-3">
+                                    <i class="mdi mdi-message-settings-variant"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['emailSettings'] ?? '' }}</span>
+                                    <p>Email Setting</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('siteSettings.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-primary rounded-circle mr-3">
+                                    <i class="mdi mdi-home-plus"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['siteSettings'] ?? '' }}</span>
+                                    <p>Site Setting</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('siteConfigs.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-info rounded-circle mr-3">
+                                    <i class="mdi mdi-settings-outline"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['siteConfigs'] ?? '' }}</span>
+                                    <p>Site Config</p>
+                                </div>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('approvals.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-secondary rounded-circle mr-3">
+                                    <i class="mdi mdi-playlist-check"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['approvals'] ?? '' }}</span>
+                                    <p>Approvals</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6">
+                    <div class="card card-default">
+                        <a href="{{ route('successStories.index') }}" style="color: inherit">
+                            <div class="d-flex p-5">
+                                <div class="icon-md bg-secondary rounded-circle mr-3">
+                                    <i class="mdi mdi-heart-multiple"></i>
+                                </div>
+                                <div class=" text-left">
+                                    <span class="h2 d-block">{{ $count['successStories'] ?? '' }}</span>
+                                    <p>Success Stories</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection
@@ -294,7 +482,3 @@
         </div>
     </div>
 </x-app-layout> --}}
-
-
-
-

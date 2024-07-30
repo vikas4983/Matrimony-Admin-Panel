@@ -20,13 +20,16 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                             <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Favicon</li>
                         </ol>
                     </nav>
-                    <span > <x-create-button-component
-                                                createRoute="{{ url('admin/favicons/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                    <span> <x-create-button-component createRoute="{{ url('admin/favicons/create') }}"
+                            activeRoute="{{ url('admin/favicons-active') }}"
+                            deleteAllRoute="{{ url('admin/favicons-destroy') }}"
+                            inActiveRoute="{{ url('admin/favicons-inActive') }}" countAll="{{ $countAll }}"
+                            active="{{ $active }}" inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
                 </div>
             </div>
 
@@ -49,10 +52,12 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col">Action</th>
                                     <th scope="col">Favicon</th>
                                     {{-- <th scope="col">Favicon</th> --}}
                                     {{-- <th scope="col">Status</th> --}}
-                                    <th scope="col">Action</th>
+
                                 </tr>
                             </thead>
 
@@ -63,13 +68,8 @@
                                 @foreach ($favicons as $favicon)
                                     <tr>
                                         <td>{{ $count }}</td>
-                                        <td>
-                                            <x-status-component :status="$favicon->status" /><img
-                                                src="{{ asset('storage/admin/logo-favicon/favicons/' . ($favicon->name ?? '')) }}"
-                                                class="user-image square" alt="image"
-                                                style="width: 50px; height: 50px; overflow: hidden; border-radius: 50%;" />
-                                        </td>
-                                        </td>
+                                        <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $favicon->id }}"></td>
                                         <td>
                                             <x-action-button destroyRoute="{{ route('favicons.destroy', $favicon->id) }}"
                                                 editRoute="{{ route('favicons.edit', $favicon->id) }}" id="$favicon->id"
@@ -77,6 +77,14 @@
                                             </x-action-button>
 
                                         </td>
+                                        <td>
+                                            <x-status-component :status="$favicon->status" /><img
+                                                src="{{ asset('storage/admin/logo-favicon/favicons/' . ($favicon->name ?? '')) }}"
+                                                class="user-image square" alt="image"
+                                                style="width: 50px; height: 50px; overflow: hidden; border-radius: 50%;" />
+                                        </td>
+                                        </td>
+
                                     </tr>
                                     @php
                                         $count++;

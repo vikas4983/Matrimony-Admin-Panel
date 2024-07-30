@@ -19,13 +19,17 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                             <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Occupation</li>
                         </ol>
                     </nav>
-                    <span> <x-create-button-component
-                                                createRoute="{{ url('admin/occupation/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                   <span> <x-create-button-component 
+                            createRoute="{{ url('admin/occupations/create') }}"
+                            activeRoute="{{ url('admin/occupations-active') }}"
+                            deleteAllRoute="{{ url('admin/occupations-destroy') }}"
+                            inActiveRoute="{{ url('admin/occupations-inActive') }}" countAll="{{ $countAll }}"
+                            active="{{ $active }}" inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
                 </div>
             </div>
             <div class="card card-default">
@@ -48,10 +52,12 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col">Action</th>
                                     <th scope="col">Occupation</th>
                                     <th scope="col">Employee Type</th>
                                     {{-- <th scope="col">Status</th> --}}
-                                    <th scope="col">Action</th>
+                                   
                                 </tr>
                             </thead>
 
@@ -62,26 +68,29 @@
                                 @foreach ($occupations as $occupation)
                                     <tr>
                                         <td>{{ $count }}</td>
-                                        <td>
-                                            {{-- @if ($occupation->status === 'Active')
-                                              <i class="mdi mdi-record" style="color: green"></i>
-                                            @elseif ($occupation->status === 'Inactive')
-                                               <i class="mdi mdi-record" style="color:red"></i>
-                                            @endif --}}
-                                            <x-status-component :status="$occupation->status"/>{{ $occupation->occupation }}</td>
-                                        <td>{{ $occupation->employee->employee }}</td>
-                                        {{-- <td>@if ($occupation->status === 'Active')
-                                              <i class="mdi mdi-record" style="color: green"></i>
-                                            @elseif ($occupation->status === 'Inactive')
-                                               <i class="mdi mdi-record" style="color:red"></i>
-                                            @endif</td>--}}
-                                        <td> 
+                                        <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $occupation->id }}"></td>
+                                        
+                                             <td> 
                                             <x-action-button
                                                 destroyRoute="{{ route('occupations.destroy', $occupation->id) }}"
                                                 editRoute="{{ route('occupations.edit', $occupation->id) }}"
                                                 id="$occupation->id" entityType="'occupation'">
                                             </x-action-button>
                                         </td>
+                                            {{-- @if ($occupation->status === 'Active')
+                                              <i class="mdi mdi-record" style="color: green"></i>
+                                            @elseif ($occupation->status === 'Inactive')
+                                               <i class="mdi mdi-record" style="color:red"></i>
+                                            @endif --}}
+                                          <td> <x-status-component :status="$occupation->status"/>{{ $occupation->occupation }}</td>
+                                        <td>{{ $occupation->employee->employee }}</td>
+                                        {{-- <td>@if ($occupation->status === 'Active')
+                                              <i class="mdi mdi-record" style="color: green"></i>
+                                            @elseif ($occupation->status === 'Inactive')
+                                               <i class="mdi mdi-record" style="color:red"></i>
+                                            @endif</td>--}}
+                                       
                                     </tr>
                                      @php
                                         $count++;

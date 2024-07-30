@@ -13,6 +13,7 @@
     <link href="{{ asset('assets/auth/plugins/DataTables/DataTables-1.10.18/css/jquery.dataTables.min.css') }}"
         rel="stylesheet" />
 @endsection
+
 @section('content')
     <div class="content-wrapper">
         <div class="content">
@@ -20,17 +21,21 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            {{-- <li class="breadcrumb-item"> <a href="{{ route('countries.create') }}">Add Country</a> </li> --}}
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                            <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Admin</li>
                         </ol>
                     </nav>
-                   <span> <x-create-button-component
-                                                createRoute="{{ url('admin/admins/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                    <span> <x-create-button-component 
+                            createRoute="{{ url('admin/admins/create') }}"
+                            activeRoute="{{ url('admin/admin-active') }}"
+                            deleteAllRoute="{{ url('admin/admin-destroy') }}"
+                            inActiveRoute="{{ url('admin/admin-inActive') }}" countAll="{{ $countAll }}"
+                            active="{{ $active }}" inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
+
+
                 </div>
             </div>
-            
             <div class="card card-default">
                 <div class="card-header">
                     @if (count($admins) > 0)
@@ -38,11 +43,13 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col">Action</th>
                                     <th scope="col">Image</th>
                                     <th scope="col">Name</th>
                                     <th scope="col">Email</th>
                                     {{-- <th scope="col">Status</th> --}}
-                                    <th scope="col">Action</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -50,16 +57,26 @@
                                     $count = ($admins->currentPage() - 1) * $admins->perPage() + 1;
                                 @endphp
                                 @foreach ($admins as $admin)
+                               
                                     <tr>
                                         <td>{{ $count }}</td>
-                                        <td><img src="{{asset('storage/admin/image/'. ($admin->image ?? ''))}}" alt="image" width="50px" height="70px"></td>
+                                        <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $admin->id }}"></td>
+                                        <td><x-action-button destroyRoute="{{ route('admins.destroy', $admin->id) }}"
+                                                editRoute="{{ route('admins.edit', $admin->id) }}" id="$admin->id"
+                                                entityType="'admin'">
+                                            </x-action-button></td>
+
+                                        <td><x-status-component :status="$admin->status" /><img
+                                                src="{{ asset('storage/admin/image/' . ($admin->image ?? '')) }}"
+                                                alt="image" width="50px" height="70px"></td>
                                         {{-- <td> @if ($country->status === 'Active')
                                                 <i class="mdi mdi-record" style="color: green"></i>
                                             @elseif ($country->status === 'Inactive')
                                                 <i class="mdi mdi-record" style="color:red"></i>
                                             @endif --}}
                                         <td>
-                                            <x-status-component :status="$admin->status" />{{ $admin->name }}
+                                            {{ $admin->name }}
                                         </td>
                                         <td>
                                             {{ $admin->email }}
@@ -72,12 +89,6 @@
                                             @endif
                                         </td> --}}
                                         <td>
-                                            {{-- <x-action-button destroy="countries.destroy" edit="countries.edit" :country="$country">
-                            </x-action-button> --}}
-                                            <x-action-button destroyRoute="{{ route('admins.destroy', $admin->id) }}"
-                                                editRoute="{{ route('admins.edit', $admin->id) }}" id="$admin->id"
-                                                entityType="'admin'">
-                                            </x-action-button>
                                         </td>
                                     </tr>
                                     @php

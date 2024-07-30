@@ -20,13 +20,17 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                            <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Education</li>
                         </ol>
                     </nav>
-                     <span> <x-create-button-component
-                                                createRoute="{{ route('admin/educations/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                     <span> <x-create-button-component 
+                            createRoute="{{ url('admin/educations/create') }}"
+                            activeRoute="{{ url('admin/educations-active') }}"
+                            deleteAllRoute="{{ url('admin/educations-destroy') }}"
+                            inActiveRoute="{{ url('admin/educations-inActive') }}" countAll="{{ $countAll }}"
+                            active="{{ $active }}" inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
                 </div>
             </div>
             <div class="card card-default">
@@ -48,9 +52,11 @@
                             <thead>
                                
                                     <th scope="col">#</th>
+                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col">Action</th>
                                     <th scope="col">Education</th>
                                     {{-- <th scope="col">Status</th> --}}
-                                    <th scope="col">Action</th>
+                                   
                                 
                             </thead>
                             <tbody>
@@ -62,6 +68,12 @@
                                 @foreach ($educations as $education)
                                     <tr>
                                         <td>{{ $count }}</td>
+                                        <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $education->id }}"></td>
+                                        <td><x-action-button destroyRoute="{{ route('admins.destroy', $education->id) }}"
+                                                editRoute="{{ route('admins.edit', $education->id) }}" id="$education->id"
+                                                entityType="'admin'">
+                                            </x-action-button></td>
                                         <td>
                                              {{-- @if ($education->status === 'Active')
                                               <i class="mdi mdi-record" style="color: green"></i>
@@ -78,13 +90,7 @@
                                                <i class="mdi mdi-record" style="color:red"></i>
                                             @endif</td>
                                         <td> --}}
-                                            <td>  
-                                            <x-action-button
-                                                destroyRoute="{{ route('educations.destroy', $education->id) }}"
-                                                editRoute="{{ route('educations.edit', $education->id) }}"
-                                                id="$education->id" entityType="'education'">
-                                            </x-action-button>
-                                        </td>
+                                            
                                     </tr>
                                      @php
                                         $count++;

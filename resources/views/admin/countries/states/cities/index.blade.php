@@ -20,14 +20,18 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            {{-- <li class="breadcrumb-item"> <a href="{{ route('cities.create') }}">Add City</a> </li> --}}
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                            <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">City</li>
                         </ol>
                     </nav>
-                    <span> <x-create-button-component
-                                                createRoute="{{ url('admin/cities/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                    <span> <x-create-button-component createRoute="{{ url('admin/cities/create') }}"
+                             deleteAllRoute="{{ url('admin/cities-destroy') }}"
+                             activeRoute="{{ url('admin/cities-active') }}"
+                             inActiveRoute="{{ url('admin/cities-inActive') }}"
+                            countAll="{{ $countAll }}"
+                            active="{{ $active }}"
+                            inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
                 </div>
             </div>
 
@@ -52,10 +56,12 @@
                                 <tr>
 
                                     <th scope="col">#</th>
+                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col">Action</th>
                                     <th scope="col">City</th>
                                     <th scope="col">State</th>
                                     {{-- <th scope="col">Status</th> --}}
-                                    <th scope="col">Action</th>
+                                    
                                 </tr>
                             </thead>
 
@@ -67,14 +73,19 @@
                                     <tr>
 
                                         <td>{{ $count }}</td>
+                                        <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $city->id }}"></td>
+                                                <td>
+                                            <x-action-button destroyRoute="{{ route('cities.destroy', $city->id) }}"
+                                                editRoute="{{ route('cities.edit', $city->id) }}" id="$city->id"
+                                                entityType="'city'">
+                                            </x-action-button>
+
+                                        </td>
                                         <td>
-                                            {{-- @if ($city->status === 'Active')
-                                                <i class="mdi mdi-record" style="color: green"></i>
-                                            @elseif ($city->status === 'Inactive')
-                                                <i class="mdi mdi-record" style="color:red"></i>
-                                            @endif --}}
-                                            <x-status-component :status="$city->status"/>{{ $city->city }}</td>
-                                        <td>{{ $city->state->state }}</td>
+                                           <x-status-component :status="$city->status" />{{ $city->city }}
+                                        </td>
+                                        <td>{{ $city->state->state ?? '' }} </td>
                                         {{-- <td>
                                             @if ($city->status === 'Active')
                                                 <i class="mdi-record" style="color: green"></i>
@@ -82,13 +93,7 @@
                                                 <i class="mdi-record" style="color:red"></i>
                                             @endif
                                         </td> --}}
-                                        <td>
-                                            <x-action-button destroyRoute="{{ route('cities.destroy', $city->id) }}"
-                                                editRoute="{{ route('cities.edit', $city->id) }}" id="$city->id"
-                                                entityType="'city'">
-                                            </x-action-button>
-
-                                        </td>
+                                        
                                     </tr>
                                     @php
                                         $count++;
@@ -97,9 +102,9 @@
                             </tbody>
                         </table>
                         <div class="d-flex justify-content-center">
-                        <span>{{ $cities->links() }}</span>
+                            <span>{{ $cities->links() }}</span>
 
-                    </div>
+                        </div>
                     @else()
                         <h3 class="text-center text-danger">No Cities found</h3>
                     @endif

@@ -20,13 +20,15 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                               <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Employee</li>
                         </ol>
                     </nav>
-                    <span> <x-create-button-component
-                                                createRoute="{{ url('admin/employees/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                     <span> <x-create-button-component createRoute="{{ url('admin/employees/create') }}"
+                            activeRoute="{{ url('admin/employees-active') }}" deleteAllRoute="{{ url('admin/employees-destroy') }}"
+                            inActiveRoute="{{ url('admin/employees-inActive') }}" countAll="{{ $countAll }}"
+                            active="{{ $active }}" inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
                 </div>
             </div>
 
@@ -52,9 +54,11 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col">Action</th>
                                     <th scope="col">Employee Type</th>
                                     {{-- <th scope="col">Status</th> --}}
-                                    <th scope="col">Action</th>
+                                    
                                 </tr>
                             </thead>
 
@@ -65,13 +69,22 @@
                                 @foreach ($employees as $employee)
                                     <tr>
                                         <td>{{ $count }}</td>
+                                        <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $employee->id }}"></td>
+                                        <td>
+                                            <x-action-button destroyRoute="{{ route('employees.destroy', $employee->id) }}"
+                                                editRoute="{{ route('employees.edit', $employee->id) }}" id="$employee->id"
+                                                entityType="'employee'">
+                                            </x-action-button>
+
+                                        </td>
                                         <td>
                                             {{-- @if ($employee->status === 'Active')
                                                 <i class="mdi mdi-record" style="color: green"></i>
                                             @elseif ($employee->status === 'Inactive')
                                                 <i class="mdi mdi-record" style="color:red"></i>
                                             @endif --}}
-                                            <x-status-component :status="$employee->status"/>{{ $employee->employee }}
+                                            <x-status-component :status="$employee->status" />{{ $employee->employee }}
                                         </td>
                                         {{-- <td>
                                             @if ($employee->status === 'Active')
@@ -80,13 +93,7 @@
                                                 <i class="mdi mdi-record" style="color:red"></i>
                                             @endif
                                         </td> --}}
-                                        <td>
-                                            <x-action-button destroyRoute="{{ route('employees.destroy', $employee->id) }}"
-                                                editRoute="{{ route('employees.edit', $employee->id) }}" id="$employee->id"
-                                                entityType="'employee'">
-                                            </x-action-button>
 
-                                        </td>
                                     </tr>
                                     @php
                                         $count++;

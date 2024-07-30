@@ -15,11 +15,18 @@ class FaviconController extends Controller
      */
     public function index()
     {
-        $logos = Logo::orderByDesc('created_at')->paginate(10);
-        $countLogo = ($logos->currentPage() - 1) * $logos->perPage();
+        // $logos = Logo::orderByDesc('created_at')->paginate(10);
+        // $countLogo = ($logos->currentPage() - 1) * $logos->perPage();
         $favicons = Favicon::orderByDesc('created_at')->paginate(10);
         $countFavicon = ($favicons->currentPage() - 1) * $favicons->perPage();
-        return view('admin.favicons.index', compact('logos', 'favicons', 'countLogo', 'countFavicon'));
+        // Activbe Count
+        $active = Favicon::where('status', 1)->count();
+        //Inactive Count
+        $inActive = Favicon::where('status', 0)->count();
+        // All Count
+        $countAll = Favicon::count();
+
+        return view('admin.favicons.index', compact('favicons', 'countFavicon', 'active', 'inActive', 'countAll'));
     }
 
     /**
@@ -63,12 +70,8 @@ class FaviconController extends Controller
                         ]);
                     }
                 }
-            } if($newFavicon) {
-                $newFavicon = Favicon::create([
-                    'name' => $FaviconName,
-                    'status' => $request->status,
-                ]);
             }
+
             return redirect('admin/favicons')->with('success', 'Favicon Uploaded Successfully!');
         } else {
             return redirect()->back()->with('error', 'Something Went Wrong!');
@@ -115,14 +118,22 @@ class FaviconController extends Controller
             if (File::exists($previousFilePathFavicon)) {
                 File::delete($previousFilePathFavicon);
             }
+            $favicons->update([
+                'name' => $faviconName,
+                'status' => $request->status,
+            ]);
+
             $previousFavicons = Favicon::all();
             foreach ($previousFavicons as $previousFavicon) {
                 if ($id != $previousFavicon->id) {
                     $previousFavicon->update([
+
                         'status' => 0
                     ]);
-                } else {
+                }
+                if ($favicons) {
                     $favicons->update([
+
                         'status' => $request->status,
                     ]);
                 }
@@ -140,14 +151,92 @@ class FaviconController extends Controller
 
 
         $favicons = Favicon::find($id);
-       
+
         if ($favicons) {
             $favicons->destroy($id);
             $msg = "Favicon Deleted Successfully";
+            if (Favicon::count() === 1) {
+                // Find the last remaining logo and activate it
+                Favicon::where('id', '!=', $id)->update([
+                    'status' => 1
+                ]);
+            }
 
             return redirect('admin/favicons')->with('error', $msg);
         } else {
             return redirect()->back()->with('error', 'Something Went Wrong!');
+        }
+    }
+    public function checkBoxDelete(Request $request)
+    {
+        //dd('checkBoxDelete');
+        //dd($request->all());
+        $selectedDeleteFaviconIds = $request->input('selectedDeleteFaviconIds');
+        if (!empty($selectedDeleteFaviconIds)) {
+            $ids = explode(',', $selectedDeleteFaviconIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $favicons = Favicon::find($id);
+                if ($favicons) {
+                    $favicons->delete(); // Use delete() method to delete a single record
+                }
+            }
+
+            return redirect()->back()->with('error', 'Selected Favicon Deleted Successfully');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+
+    public function activeItem(Request $request)
+    {
+
+        //dd('activeItem');
+        //dd($request->all());
+        $selectedActiveFaviconIds = $request->input('selectedActiveFaviconIds');
+        if (!empty($selectedActiveFaviconIds)) {
+            $ids = explode(',', $selectedActiveFaviconIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $favicons = Favicon::find($id);
+                if ($favicons) {
+                    $favicons->update([
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Favicon Activated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+    public function inActiveItem(Request $request)
+    {
+        //dd('inActiveItem');
+        // dd($request->all());
+        $selectedInactiveFaviconIds = $request->input('selectedInactiveFaviconIds');
+        if (!empty($selectedInactiveFaviconIds)) {
+            $ids = explode(',', $selectedInactiveFaviconIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $favicons = Favicon::find($id);
+                if ($favicons) {
+                    $favicons->update([
+                        'status' => 0
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Favicon inActivated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
         }
     }
 }

@@ -91,7 +91,7 @@ class RazorpayPaymentController extends Controller
                             DB::beginTransaction();
                             RazorPay::create($paymentData);
                             Payment::create([
-                                'admin_id' => $admin_id,
+                                'user_id' => $admin_id,
                                 'plan_id' => $plan_id,
                                 'price' => floor($price),
                                 'paid' => floor($offer_price),
@@ -106,7 +106,7 @@ class RazorpayPaymentController extends Controller
                             DB::beginTransaction();
                             RazorPay::create($paymentData);
                             Payment::create([
-                                'admin_id' => $request->admin_id,
+                                'user_id' => $request->admin_id,
                                 'plan_id' => $plan->id,
                                 'price' => floor($plan->price),
                                 'paid' => floor($plan->offer_price),

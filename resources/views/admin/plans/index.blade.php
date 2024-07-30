@@ -22,13 +22,17 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                             <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Plan</li>
                         </ol>
                     </nav>
-                    <span> <x-create-button-component
-                                                createRoute="{{ url('admin/plans/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                    <span> <x-create-button-component 
+                            createRoute="{{ url('admin/plans/create') }}"
+                            activeRoute="{{ url('admin/plans-active') }}"
+                            deleteAllRoute="{{ url('admin/plans-destroy') }}"
+                            inActiveRoute="{{ url('admin/plans-inActive') }}" countAll="{{ $countAll }}"
+                            active="{{ $active }}" inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
                 </div>
             </div>
             <div class="card card-default">
@@ -50,7 +54,8 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    {{-- <th scope="col">Image</th> --}}
+                                   <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col">Action</th>
                                     <th scope="col">Plan</th>
                                     <th scope="col">Duration</th>
                                     <th scope="col">Price</th>
@@ -60,7 +65,7 @@
                                     <th scope="col">Video</th>
                                     <th scope="col">Message</th>
                                     {{-- <th scope="col">Status</th> --}}
-                                    <th scope="col">Action</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -70,6 +75,14 @@
                                 @foreach ($plans as $plan)
                                     <tr>
                                        <td>{{ $count }}</td>
+                                       <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $plan->id }}"></td>
+                                                <td>
+                                            <x-action-button destroyRoute="{{ route('plans.destroy', $plan->id) }}"
+                                                editRoute="{{ route('plans.edit', $plan->id) }}" id="$plans->id"
+                                                entityType="'plans'">
+                                            </x-action-button>
+                                        </td>
                                        {{-- <td>{{ $image }}</td> --}}
                                         {{-- <td> @if ($plan->status === 'Active')
                                               <i class="mdi mdi-record" style="color: green"></i>
@@ -92,12 +105,7 @@
                                                <i class="mdi mdi-record" style="color:red"></i>
                                             @endif
                                         </td> --}}
-                                        <td>
-                                            <x-action-button destroyRoute="{{ route('plans.destroy', $plan->id) }}"
-                                                editRoute="{{ route('plans.edit', $plan->id) }}" id="$plans->id"
-                                                entityType="'plans'">
-                                            </x-action-button>
-                                        </td>
+                                        
                                     </tr>
                                     @php
                                         $count++;

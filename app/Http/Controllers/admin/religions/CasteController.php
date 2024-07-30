@@ -18,7 +18,13 @@ class CasteController extends Controller
     {
         $castes = Caste::orderByDesc('created_at')->paginate(10);
         $count = ($castes->currentPage() - 1) * $castes->perPage();
-        return view('admin.religions.castes.index', compact('castes', 'count'));
+        // Activbe Count
+        $active = Caste::where('status', 1)->count();
+        //Inactive Count
+        $inActive = Caste::where('status', 0)->count();
+        // All Count
+        $countAll = Caste::count();
+        return view('admin.religions.castes.index', compact('castes','count', 'active', 'inActive', 'countAll'));
     }
 
     /**
@@ -85,5 +91,77 @@ class CasteController extends Controller
         $caste->destroy($caste->id);
         $msg = "Caste Deleted Successfully";
         return redirect('admin/castes')->with('error', $msg);
+    }
+    public function checkBoxDelete(Request $request)
+    {
+        //dd('checkBoxDelete');
+        //dd($request->all());
+        $selectedDeleteCasteIds = $request->input('selectedDeleteCasteIds');
+        if (!empty($selectedDeleteCasteIds)) {
+            $ids = explode(',', $selectedDeleteCasteIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $User = Caste::find($id);
+                if ($User) {
+                    $User->delete(); // Use delete() method to delete a single record
+                }
+            }
+
+            return redirect()->back()->with('error', 'Selected City Deleted Successfully');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+
+    public function activeItem(Request $request)
+    {
+
+        //dd('activeItem');
+        //dd($request->all());
+        $selectedActiveCasteIds = $request->input('selectedActiveCasteIds');
+        if (!empty($selectedActiveCasteIds)) {
+            $ids = explode(',', $selectedActiveCasteIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $User = Caste::find($id);
+                if ($User) {
+                    $User->update([
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected City Activated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+    public function inActiveItem(Request $request)
+    {
+        //dd('inActiveItem');
+        // dd($request->all());
+        $selectedInactiveCasteIds = $request->input('selectedInactiveCasteIds');
+        if (!empty($selectedInactiveCasteIds)) {
+            $ids = explode(',', $selectedInactiveCasteIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $User = Caste::find($id);
+                if ($User) {
+                    $User->update([
+                        'status' => 0
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected City inActivated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
     }
 }

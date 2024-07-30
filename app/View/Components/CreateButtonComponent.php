@@ -11,12 +11,25 @@ class CreateButtonComponent extends Component
     /**
      * Create a new component instance.
      */
-    
-     public $createRoute;
 
-    public function __construct($createRoute)
+    public $createRoute;
+    public $countAll;
+    public $active;
+    public $inActive;
+    public $activeRoute;
+    public $inActiveRoute;
+    public $deleteAllRoute;
+
+
+    public function __construct($createRoute, $active, $inActive, $countAll,  $activeRoute, $inActiveRoute, $deleteAllRoute)
     {
-        $this->createRoute= $createRoute;
+        $this->createRoute = $createRoute;
+        $this->countAll = $countAll;
+        $this->deleteAllRoute = $deleteAllRoute;
+        $this->active = $active;
+        $this->inActive = $inActive;
+        $this->activeRoute = $activeRoute;
+        $this->inActiveRoute = $inActiveRoute;
     }
 
     /**

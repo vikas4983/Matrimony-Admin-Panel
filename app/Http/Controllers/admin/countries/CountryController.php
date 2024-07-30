@@ -19,7 +19,13 @@ class CountryController extends Controller
         $countries =
         Country::orderByDesc('created_at')->paginate(10);
         $count = ($countries->currentPage() - 1) * $countries->perPage();
-        return view('admin.countries.index', compact('countries','count'));
+        // Activbe Count
+        $active = Country::where('status', 1)->count();
+        //Inactive Count
+        $inActive = Country::where('status', 0)->count();
+        // All Count
+        $countAll = Country::count();
+        return view('admin.countries.index', compact('countries','count', 'active', 'inActive', 'countAll'));
     }
 
     /**
@@ -35,6 +41,7 @@ class CountryController extends Controller
      */
     public function store(CreateCountryRequest $request)
     {
+        dd($request->all());
         Country::create([
             'country' => $request->country,
             'status' => $request->status
@@ -88,4 +95,80 @@ class CountryController extends Controller
 
         return redirect('admin/countries')->with('error', $msg);
     }
+
+    public function checkBoxDelete(Request $request)
+    {
+       // dd($request->all());
+        $selectedInactiveCountryIds = $request->input('selectedInactiveCountryIds');
+        if (!empty($selectedInactiveCountryIds)) {
+            $ids = explode(',', $selectedInactiveCountryIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $User = Country::find($id);
+                if ($User) {
+                    $User->delete(); // Use delete() method to delete a single record
+                }
+            }
+
+            return redirect()->back()->with('error', 'Country Deleted Successfully');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+
+    public function activeItem(Request $request)
+    { 
+        
+        //dump('country');
+       // dd($request->all());
+        $selectedActiveCountryIds = $request->input('selectedActiveCountryIds');
+        if (!empty($selectedActiveCountryIds)) {
+            $ids = explode(',', $selectedActiveCountryIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $User = Country::find($id);
+                if ($User) {
+                    $User->update([
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Country Activated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+    public function inActiveItem(Request $request)
+    {
+        //dd($request->all());
+        //selectedInactiveCountryIds
+        $selectedInactiveCountryIds = $request->input('selectedInactiveCountryIds');
+        if (!empty($selectedInactiveCountryIds)) {
+            $ids = explode(',', $selectedInactiveCountryIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $User = Country::find($id);
+                if ($User) {
+                    $User->update([
+                        'status' => 0
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Country inActivated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+
+
+
+
 }

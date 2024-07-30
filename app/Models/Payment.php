@@ -9,7 +9,7 @@ class Payment extends Model
 {
     use HasFactory;
     public $fillable = [
-        'admin_id',
+        'user_id',
         'plan_id',
         'price',
         'paid',
@@ -17,8 +17,9 @@ class Payment extends Model
        'expiry_date',
     ];
 
-    public function admin(){
-        return $this->belongsTo(Admin::class);
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function plan(){

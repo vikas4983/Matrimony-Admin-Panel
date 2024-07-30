@@ -131,15 +131,23 @@
                         <div class="card-header">
                             <h2 class="mb-5">Choose Your Plan</h2>
                         </div>
+
                         <div class="card-body">
                             <div class="row justify-content-center">
                                 @foreach ($plans as $plan)
+                                    {{-- @dd( \App\Models\Payment::latest('created_at', 'desc')->get()) --}}
                                     <div class="col-lg-6 col-xl-4">
                                         <div class="card card-default">
-                                            @if (\App\Models\Payment::latest('plan_id', $plan->id)->value('plan_id') === $plan->id)
-                                                <div class="btn btn-primary">
-                                                    Your Active plan
-                                                </div>
+                                            @if ($latestPayment ?? '')
+                                                @if ($latestPayment->plan_id === $plan->id)
+                                                    @if ($expiryDate > $currentDate)
+                                                        <div class="btn btn-primary">
+                                                            Your Active plan
+                                                        </div>
+                                                    @else
+                                                        <!-- Plan is not active -->
+                                                    @endif
+                                                @endif
                                             @endif
                                             <div class="card-header align-items-center flex-column">
                                                 <h5 class="h4 mb-2"><i

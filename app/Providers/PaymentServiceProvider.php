@@ -28,7 +28,7 @@ class PaymentServiceProvider extends ServiceProvider
             if (Auth::user()) {
                 $activePlan = Payment::latest('created_at', 'desc')->first();
                 $view->with('activePlan', $activePlan);
-                
+                //dd($activePlan);
             } 
             else  {
                 $free = Auth::user();

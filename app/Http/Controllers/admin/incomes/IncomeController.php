@@ -17,7 +17,13 @@ class IncomeController extends Controller
     {
         $incomes = Income::orderByDesc('created_at')->paginate(10);
         $count = ($incomes->currentPage() - 1) * $incomes->perPage();
-        return view('admin.incomes.index', compact('incomes', 'count'));
+        // Activbe Count
+        $active = Income::where('status', 1)->count();
+        //Inactive Count
+        $inActive = Income::where('status', 0)->count();
+        // All Count
+        $countAll = Income::count();
+        return view('admin.incomes.index', compact('incomes','count', 'active', 'inActive', 'countAll'));
     }
 
     /**
@@ -33,6 +39,7 @@ class IncomeController extends Controller
      */
     public function store(CreateIncomeRequest $request)
     {
+        //dd($request->all());
         Income::create([
             'income' => $request->income,
             'status' => $request->status
@@ -63,14 +70,15 @@ class IncomeController extends Controller
      */
     public function update(UpdateIncomeRequest $request, Income $income)
     {
+        //dd($request->all());
         $income->update([
             'income' => $request->income,
             'status' => $request->status
         ]);
         $msg = "Income Updated Successfully";
 
-        //return redirect('admin/incomes')->with('info', $msg);
-        return redirect('error');
+        return redirect('admin/incomes')->with('info', $msg);
+       // return redirect('error');
     }
 
     /**
@@ -82,5 +90,77 @@ class IncomeController extends Controller
         $msg = "Income Deleted Successfully";
 
         return redirect('admin/incomes')->with('error', $msg);
+    }
+    public function checkBoxDelete(Request $request)
+    {
+        //dd('checkBoxDelete');
+        //dd($request->all());
+        $selectedDeleteIncomeIds = $request->input('selectedDeleteIncomeIds');
+        if (!empty($selectedDeleteIncomeIds)) {
+            $ids = explode(',', $selectedDeleteIncomeIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $incomes = Income::find($id);
+                if ($incomes) {
+                    $incomes->delete(); // Use delete() method to delete a single record
+                }
+            }
+
+            return redirect()->back()->with('error', 'Selected Income Deleted Successfully');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+
+    public function activeItem(Request $request)
+    {
+
+        //dd('activeItem');
+        //dd($request->all());
+        $selectedActiveIncomeIds = $request->input('selectedActiveIncomeIds');
+        if (!empty($selectedActiveIncomeIds)) {
+            $ids = explode(',', $selectedActiveIncomeIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $incomes = Income::find($id);
+                if ($incomes) {
+                    $incomes->update([
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Income Activated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+    public function inActiveItem(Request $request)
+    {
+        //dd('inActiveItem');
+        // dd($request->all());
+        $selectedInactiveIncomeIds = $request->input('selectedInactiveIncomeIds');
+        if (!empty($selectedInactiveIncomeIds)) {
+            $ids = explode(',', $selectedInactiveIncomeIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $incomes = Income::find($id);
+                if ($incomes) {
+                    $incomes->update([
+                        'status' => 0
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Income inActivated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
     }
 }

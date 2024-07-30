@@ -16,7 +16,13 @@ class EducationController extends Controller
         $educations =
             Education::orderByDesc('created_at')->paginate(10);
         $count = ($educations->currentPage() - 1) * $educations->perPage();
-        return view('admin.educations.index', compact('educations','count'));
+        // Activbe Count
+        $active = Education::where('status', 1)->count();
+        //Inactive Count
+        $inActive = Education::where('status', 0)->count();
+        // All Count
+        $countAll = Education::count();
+        return view('admin.educations.index', compact('educations', 'count', 'active', 'inActive', 'countAll'));
     }
 
     /**
@@ -78,5 +84,77 @@ class EducationController extends Controller
         $education->destroy($education->id);
         $msg = "Education  Deleted Successfully";
         return redirect('admin/educations')->with('error', $msg);
+    }
+    public function checkBoxDelete(Request $request)
+    {
+        //dd('checkBoxDelete');
+        //dd($request->all());
+        $selectedDeleteEducationIds = $request->input('selectedDeleteEducationIds');
+        if (!empty($selectedDeleteEducationIds)) {
+            $ids = explode(',', $selectedDeleteEducationIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $educations = Education::find($id);
+                if ($educations) {
+                    $educations->delete(); // Use delete() method to delete a single record
+                }
+            }
+
+            return redirect()->back()->with('error', 'Selected Education Deleted Successfully');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+
+    public function activeItem(Request $request)
+    {
+
+        //dd('activeItem');
+        //dd($request->all());
+        $selectedActiveEducationIds = $request->input('selectedActiveEducationIds');
+        if (!empty($selectedActiveEducationIds)) {
+            $ids = explode(',', $selectedActiveEducationIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $educations = Education::find($id);
+                if ($educations) {
+                    $educations->update([
+                        'status' => 1
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Education Activated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
+    }
+    public function inActiveItem(Request $request)
+    {
+        //dd('inActiveItem');
+        // dd($request->all());
+        $selectedInactiveEducationIds = $request->input('selectedInactiveEducationIds');
+        if (!empty($selectedInactiveEducationIds)) {
+            $ids = explode(',', $selectedInactiveEducationIds[0]);
+
+            // Check if you're receiving an array of selected IDs
+            foreach ($ids as $id) {
+                //dd($id); // Check if each ID is being processed correctly
+                $educations = Education::find($id);
+                if ($educations) {
+                    $educations->update([
+                        'status' => 0
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with('success', 'Selected Education inActivated successfully.');
+        } else {
+            return redirect()->back()->with('error', 'No items selected.');
+        }
     }
 }

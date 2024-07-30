@@ -24,5 +24,9 @@ class Plan extends Model
     {
         return strtoupper($value);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
     
 }

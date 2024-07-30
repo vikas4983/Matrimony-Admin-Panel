@@ -7,8 +7,9 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item"> <a href="{{ route('logos.index') }}">Home</a> </li>
-                            <li class="breadcrumb-item active" aria-current="page">Edit Logo & Favicon
+                              <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item"> <a href="{{ route('logos.index') }}">Favicon</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Edit Favicon
                             </li>
                         </ol>
                     </nav>
@@ -55,7 +56,7 @@
                             <label>Upload New Favicon </label>
                             <input type="file" class="form-control" name="favicon">
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label>Status</label>
                             <select name="status" id="" class="form-control">
                                 <option value="1" {{ old('status', $favicon->status) == 1 ? 'selected' : '' }}>Active
@@ -63,8 +64,24 @@
                                 <option value="0" {{ old('status', $favicon->status) == 0 ? 'selected' : '' }}>Deactive
                                 </option>
                             </select>
+                        </div> --}}
+                        <div><label>Status</label></div>
+                        <div class="custom-control custom-radio d-inline-block mr-3 mb-3">
+                            <input type="radio" id="customRadio1" name="status" class="custom-control-input"
+                                value="1" {{$favicon->status == 'Active' ? 'checked' : ''}}>
+                            <label class="custom-control-label" for="customRadio1">Active</label>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+
+                        <div class="custom-control custom-radio d-inline-block mr-3 mb-3">
+                            <input type="radio" id="customRadio2" name="status" class="custom-control-input"
+                                value="0" {{ $favicon->status == 'Inactive' ? 'checked' : '' }}>
+                            <label class="custom-control-label" for="customRadio2">Inactive</label>
+                        </div>
+                        {{-- <button type="submit" class="btn btn-primary">Submit</button> --}}
+                         <x-submit-button-component 
+                      buttonStyle="$buttonStyle->buttonStyle"
+                      content="Update Favicon"
+                      />
                     </form>
 
                 </div>

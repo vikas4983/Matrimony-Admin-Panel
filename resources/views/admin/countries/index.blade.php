@@ -20,14 +20,16 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            {{-- <li class="breadcrumb-item"> <a href="{{ route('countries.create') }}">Add Country</a> </li> --}}
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                            <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Countries</li>
                         </ol>
                     </nav>
-                    <span> <x-create-button-component
-                                                createRoute="{{ url('admin/countries/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                    <span> <x-create-button-component createRoute="{{ url('admin/countries/create') }}"
+                            deleteAllRoute="{{ url('admin/countries-destroy') }}"
+                            activeRoute="{{ url('admin/countries-active') }}"
+                            inActiveRoute="{{ url('admin/countries-inActive') }}" countAll="{{ $countAll }}"
+                            active="{{ $active }}" inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
                 </div>
             </div>
             <div class="card card-default">
@@ -37,9 +39,12 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Countries</th>
-                                    {{-- <th scope="col">Status</th> --}}
+                                    <th scope="col"><input type="checkbox"
+                                            class="custom-control custom-checkbox d-inline-block mr-3 mb-3"
+                                            id="selectAllCheckbox"></th>
                                     <th scope="col">Action</th>
+                                    <th scope="col mr-3">Countries</th>
+                                    {{-- <th scope="col">Status</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -49,6 +54,16 @@
                                 @foreach ($countries as $country)
                                     <tr>
                                         <td>{{ $count }}</td>
+                                        <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $country->id }}"></td>
+                                        <td>
+                                            {{-- <x-action-button destroy="countries.destroy" edit="countries.edit" :country="$country">
+                            </x-action-button> --}}
+                                            <x-action-button destroyRoute="{{ route('countries.destroy', $country->id) }}"
+                                                editRoute="{{ route('countries.edit', $country->id) }}" id="$country->id"
+                                                entityType="'country'">
+                                            </x-action-button>
+                                        </td>
                                         {{-- <td> @if ($country->status === 'Active')
                                                 <i class="mdi mdi-record" style="color: green"></i>
                                             @elseif ($country->status === 'Inactive')
@@ -64,14 +79,7 @@
                                                 <i class="mdi mdi-record" style="color:red"></i>
                                             @endif
                                         </td> --}}
-                                        <td>
-                                            {{-- <x-action-button destroy="countries.destroy" edit="countries.edit" :country="$country">
-                            </x-action-button> --}}
-                                            <x-action-button destroyRoute="{{ route('countries.destroy', $country->id) }}"
-                                                editRoute="{{ route('countries.edit', $country->id) }}" id="$country->id"
-                                                entityType="'country'">
-                                            </x-action-button>
-                                        </td>
+
                                     </tr>
                                     @php
                                         $count++;
@@ -103,8 +111,10 @@
 
         </div>
     </div>
+
+
 @endsection
-{{-- @section('scripts')
+@section('scripts')
     <script src="{{ asset('assets/auth/plugins/DataTables/DataTables-1.10.18/js/jquery.dataTables.min.js') }}"></script>
     <script>
         $(document).ready(function() {
@@ -113,4 +123,4 @@
         });
     </script>
 
-@endsection --}}
+@endsection

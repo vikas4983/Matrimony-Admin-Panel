@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\SiteSetting;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateSiteSettingRequest;
+use App\Http\Requests\UpdateSiteSettingRequest;
 use Illuminate\Http\Request;
 
 class SiteSettingController extends Controller
@@ -13,7 +15,14 @@ class SiteSettingController extends Controller
      */
     public function index()
     {
-        //
+        $siteSettings = SiteSetting::orderByDesc('created_at')->paginate(10);
+        //    // Activbe Count
+        //     $active = Menu::where('status', 1)->count();
+        //     //Inactive Count
+        //     $inActive = Menu::where('status', 0)->count();
+        //     // All Count
+        //     $countAll = Menu::count();
+        return view('admin.siteSettings.index', compact('siteSettings'));
     }
 
     /**
@@ -21,15 +30,17 @@ class SiteSettingController extends Controller
      */
     public function create()
     {
-        //
+        return view('admin.siteSettings.create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateSiteSettingRequest $request)
     {
-        //
+        SiteSetting::create($request->all());
+        $msg = "Site Setting Added Successfully";
+        return redirect('admin/siteSettings')->with('success', $msg);
     }
 
     /**
@@ -45,15 +56,21 @@ class SiteSettingController extends Controller
      */
     public function edit(SiteSetting $siteSetting)
     {
-        //
+        return view('admin.siteSettings.edit', compact('siteSetting'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, SiteSetting $siteSetting)
+    public function update(UpdateSiteSettingRequest $request, SiteSetting $siteSetting)
     {
-        //
+        if ($siteSetting) {
+            $siteSetting->update($request->all());
+            $msg = "Site Setting Update Successfully";
+            return redirect('admin/siteSettings')->with('success', $msg);
+        } else {
+            return redirect()->back()->with('success', 'Something Went Wrong!');
+        }
     }
 
     /**
@@ -61,6 +78,12 @@ class SiteSettingController extends Controller
      */
     public function destroy(SiteSetting $siteSetting)
     {
-        //
+        if ($siteSetting) {
+            $siteSetting->destroy($siteSetting->id);
+            $msg = "Site Setting Deleted Successfully";
+            return redirect('admin/siteSettings')->with('success', $msg);
+        } else {
+            return redirect()->back()->with('success', 'Something Went Wrong!');
+        }
     }
 }

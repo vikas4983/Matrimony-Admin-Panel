@@ -20,13 +20,15 @@
                 <div class="card-header">
                     <nav aria-label="breadcrumb">
                         <ol class="breadcrumb">
-                            <li class="breadcrumb-item active" aria-current="page">Home</li>
+                             <li class="breadcrumb-item"> <a href="{{ url('dashboard') }}">Home</a> </li>
+                            <li class="breadcrumb-item active" aria-current="page">Religion</li>
                         </ol>
                     </nav>
-                    <span> <x-create-button-component
-                                                createRoute="{{ url('admin/religions/create') }}"
-                                               >
-                                            </x-create-button-component></span>
+                    <span> <x-create-button-component createRoute="{{ url('admin/religions/create') }}"
+                            activeRoute="{{ url('admin/religions-active') }}" deleteAllRoute="{{ url('admin/religions-destroy') }}"
+                            inActiveRoute="{{ url('admin/religions-inActive') }}" countAll="{{ $countAll }}"
+                            active="{{ $active }}" inActive="{{ $inActive }}">
+                        </x-create-button-component></span>
                 </div>
             </div>
             <div class="card card-default">
@@ -51,9 +53,11 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
+                                    <th scope="col"><input type="checkbox" id="selectAllCheckbox"></th>
+                                    <th scope="col">Action</th>
                                     <th scope="col">Religion</th>
                                     {{-- <th scope="col">Status</th> --}}
-                                    <th scope="col">Action</th>
+                                    
                                 </tr>
                             </thead>
 
@@ -64,32 +68,35 @@
                                 @foreach ($religions as $religion)
                                     <tr>
                                         <td>{{ $count }}</td>
-                                        {{-- <td>@if ($religion->status === 'Active')
-                                              <i class="mdi mdi-record" style="color: green"></i>
-                                            @elseif ($religion->status === 'Inactive')
-                                               <i class="mdi mdi-record" style="color:red"></i>
-                                            @endif --}}
-                                           <td> <x-status-component :status="$religion->status"/>{{ $religion->religion }}</td>
-                                        {{-- <td>@if ($religion->status === 'Active')
-                                              <i class="mdi mdi-record" style="color: green"></i>
-                                            @elseif ($religion->status === 'Inactive')
-                                               <i class="mdi mdi-record" style="color:red"></i>
-                                            @endif</td>--}}
-                                        <td> 
+                                         <td><input type="checkbox" class="selectCheckbox" name="selectedIds[]"
+                                                value="{{ $religion->id }}"></td>
+                                        <td>
                                             <x-action-button destroyRoute="{{ route('religions.destroy', $religion->id) }}"
                                                 editRoute="{{ route('religions.edit', $religion->id) }}" id="$religion->id"
                                                 entityType="'religion'">
                                             </x-action-button>
                                         </td>
+                                        {{-- <td>@if ($religion->status === 'Active')
+                                              <i class="mdi mdi-record" style="color: green"></i>
+                                            @elseif ($religion->status === 'Inactive')
+                                               <i class="mdi mdi-record" style="color:red"></i>
+                                            @endif --}}
+                                        <td> <x-status-component :status="$religion->status" />{{ $religion->religion }}</td>
+                                        {{-- <td>@if ($religion->status === 'Active')
+                                              <i class="mdi mdi-record" style="color: green"></i>
+                                            @elseif ($religion->status === 'Inactive')
+                                               <i class="mdi mdi-record" style="color:red"></i>
+                                            @endif</td> --}}
+                                        
                                     </tr>
-                                     @php
+                                    @php
                                         $count++;
                                     @endphp
                                 @endforeach
                             </tbody>
 
                         </table>
-                         <div class="d-flex justify-content-center">
+                        <div class="d-flex justify-content-center">
                             <span>{{ $religions->links() }}</span>
 
                         </div>
